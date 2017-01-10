@@ -20,11 +20,15 @@ import type {Type, Property, ObjectMap} from './types'
 // you should run this when your program starts
 
 export function readFile(filepath:string):ObjectMap<Type> {
-  return findTypes(parseFile(filepath))
+  var data = fs.readFileSync(filepath).toString()
+  return findTypes(parseString(data))
 }
 
-function parseFile(filepath:string):Tree {
-  var data = fs.readFileSync(filepath).toString()
+export function readString(fileString: string): ObjectMap<Type> {
+  return findTypes(parseString(fileString))
+}
+
+function parseString(data:string):Tree {
   // Strip 'declare export' statements from Flow 0.19, which aren't supported by esprima.
   // They're not useful to us anyway.
   data = data.replace(/declare export .*?(?:\n|$)/ig, '')
